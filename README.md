@@ -1,88 +1,144 @@
-# BLE Beacon Detection & Distance Estimation (Java / Android)
+# 📡 BLE Beacon Navigation
 
-An Android application developed in Java for detecting nearby Bluetooth Low Energy (BLE) advertisers and estimating their distance using received signal strength (RSSI) and advertised transmission power (TxPower).
+### Android BLE Scanning & RSSI-Based Distance Estimation
 
-**This project is a reconstruction of a 2023 university Android prototype**, based on the author's original technical report. The original source code was unavailable, so the application was reimplemented from scratch.
+![Java](https://img.shields.io/badge/Java-17-ED8B00?logo=openjdk&logoColor=white)
+![Android](https://img.shields.io/badge/Android-API%2023%2B-3DDC84?logo=android&logoColor=white)
+![Bluetooth LE](https://img.shields.io/badge/Bluetooth-Low%20Energy-0082FC?logo=bluetooth&logoColor=white)
+![Gradle](https://img.shields.io/badge/Gradle-8.7-02303A?logo=gradle&logoColor=white)
+![Build](https://img.shields.io/badge/Local%20Build-Passing-brightgreen)
+![Testing](https://img.shields.io/badge/Hardware%20Testing-Pending-yellow)
 
-**Build status:** Successfully built using Gradle 8.7, Android Gradle Plugin 8.5.2, and JDK 17. BLE scanning functionality has not yet been tested on a physical Android device or with a physical BLE beacon.
+An Android application developed in **Java** for discovering nearby Bluetooth Low Energy (BLE) advertisers, monitoring signal strength, and estimating proximity using an RSSI-based path-loss model.
 
-## Features
+This repository contains a **from-scratch reconstruction of a 2023 university project**, based on the author's original technical report.
 
-- Scan for nearby Bluetooth Low Energy (BLE) advertisers.
-- Display detected device addresses and RSSI values.
-- Read advertised TxPower when available.
-- Estimate approximate distance using an RSSI-based path-loss model.
-- Start and stop BLE scanning.
-- Handle missing Bluetooth permissions and disabled Bluetooth.
+> **Project status:** The application builds successfully with Gradle 8.7 and JDK 17. The reconstructed implementation has not yet been tested on a physical Android device or BLE beacon.
 
-## Distance Estimation
+---
+
+## ✨ Features
+
+- **BLE Discovery:** Scan for nearby Bluetooth Low Energy advertisers.
+- **RSSI Monitoring:** Display received signal strength measurements.
+- **TxPower Reading:** Retrieve advertised transmission power when available.
+- **Distance Estimation:** Estimate proximity using RSSI and TxPower.
+- **Device Information:** Display detected Bluetooth device addresses.
+- **Scan Controls:** Start and stop BLE scanning.
+- **Permission Handling:** Handle missing permissions and disabled Bluetooth.
+
+## 📱 Original Android Prototype (2023)
+
+The following screenshots document the original Android application developed during the 2023 university project.
+
+They show the original scanning interface, Android location permission handling, and the feedback displayed when no beacon was detected.
+
+**These screenshots belong to the original 2023 prototype, not the current reconstructed implementation.**
+
+| BLE Scanning Interface | Location Permission | No Beacon Found |
+|:---:|:---:|:---:|
+| <img src="docs/images/Beacon2.jpeg" alt="Original BLE scanning interface" width="210"> | <img src="docs/images/Beacon1.jpeg" alt="Original Android location permission dialog" width="210"> | <img src="docs/images/Beacon4.jpeg" alt="Original No Beacon Found dialog" width="210"> |
+| Main screen displaying RSSI, TxPower and estimated distance fields | Android permission request | Feedback when no beacon is detected |
+
+---
+
+## 🛠️ Tech Stack
+
+| Technology | Purpose |
+|---|---|
+| **Java 17** | Application development |
+| **Android SDK** | Native Android platform |
+| **Bluetooth Low Energy API** | Device discovery and signal measurements |
+| **Gradle 8.7** | Build automation |
+| **Android Gradle Plugin 8.5.2** | Android build configuration |
+| **Android API 35** | Compile SDK |
+| **Android API 23** | Minimum supported SDK |
+
+## ⚙️ How It Works
+
+The application uses Android's Bluetooth Low Energy scanning APIs to discover nearby advertising devices.
+
+The intended scanning workflow is:
+
+1. The user starts a BLE scan.
+2. Android reports nearby BLE advertisers.
+3. The application reads the received signal strength (RSSI).
+4. When advertised TxPower is available, an approximate distance is calculated.
+5. The collected measurements are displayed.
+6. The user can stop the scan.
+
+### 📐 Distance Estimation
 
 The application uses a simplified logarithmic path-loss model:
 
-\[
-d = 10^{\frac{TxPower - RSSI}{10 \times n}}
-\]
+$$
+d = 10^{\frac{TxPower - RSSI}{10n}}
+$$
 
 Where:
 
-- **d**: Estimated distance in meters.
-- **TxPower**: Reference transmission power value in dBm, when available.
-- **RSSI**: Received Signal Strength Indicator in dBm.
-- **n**: Path-loss exponent, assumed to be 2.
+- **d:** Estimated distance in meters
+- **TxPower:** Reference transmission power in dBm
+- **RSSI:** Received Signal Strength Indicator in dBm
+- **n:** Path-loss exponent, assumed to be `2`
 
-This model provides an approximate distance estimate rather than an accurate physical measurement.
+This model provides an approximate proximity estimate, not an accurate physical distance measurement.
 
-Actual results depend on environmental conditions, signal interference, obstacles, and device characteristics.
+Results depend on signal interference, obstacles, device characteristics, and environmental conditions.
 
 If TxPower is unavailable, the application cannot calculate a distance estimate using this model.
 
-## Technologies
+---
 
-- **Language:** Java
-- **Platform:** Android
-- **API:** Android Bluetooth Low Energy (BLE)
-- **Build system:** Gradle 8.7
-- **Android Gradle Plugin:** 8.5.2
-- **JDK:** 17
-- **Compile SDK:** Android API 35
-- **Minimum SDK:** Android API 23
-
-## Build Instructions
+## 🚀 Getting Started
 
 ### Prerequisites
 
 - JDK 17
 - Android SDK Platform 35
 - Android SDK Build Tools
-- Gradle Wrapper (included in the repository)
+- An Android device with BLE support for runtime testing
 
-### Build from the command line
+### 1. Clone the Repository
 
-Clone the repository and navigate to its directory.
+```bash
+git clone https://github.com/cbarda/ble-beacon-navigation.git
+cd ble-beacon-navigation
+```
 
-Configure the Android SDK location using the `ANDROID_HOME` environment variable or a local `local.properties` file.
+### 2. Configure the Android SDK
 
-Example `local.properties`:
+Set the `ANDROID_HOME` environment variable or create a `local.properties` file in the project root:
 
 ```properties
 sdk.dir=/path/to/your/Android/Sdk
 ```
 
-Then run:
+The `local.properties` file is excluded from version control.
+
+### 3. Build the Application
+
+On Linux or macOS:
 
 ```bash
 ./gradlew assembleDebug
 ```
 
-The project has successfully completed this build command on Linux.
+On Windows:
 
-The generated debug APK can be found at:
+```powershell
+.\gradlew.bat assembleDebug
+```
+
+The generated debug APK is located at:
 
 ```text
 app/build/outputs/apk/debug/app-debug.apk
 ```
 
-## Running the Application
+**Build verification:** The project successfully completed `assembleDebug` on Linux using Gradle 8.7 and JDK 17.
+
+### 4. Run the Application
 
 1. Open the project in Android Studio.
 2. Allow Gradle to synchronize the project.
@@ -92,55 +148,77 @@ app/build/outputs/apk/debug/app-debug.apk
 6. Tap **SEARCH BEACON** to start scanning.
 7. Tap **STOP CALCULATING** to stop scanning.
 
-On Android 6–11, Location Services may also need to be enabled for BLE scanning.
+On Android 6–11, Location Services may also need to be enabled.
 
-**Note:** These are the intended usage steps. The application's runtime behavior has not yet been verified on physical hardware.
+> These are the intended usage steps. Runtime behavior has not yet been verified on physical hardware.
 
-## Current Limitations
+---
+
+## 📂 Project Structure
+
+```text
+ble-beacon-navigation/
+├── app/
+│   ├── build.gradle
+│   └── src/
+│       └── main/
+│           ├── AndroidManifest.xml
+│           └── java/
+│               └── com/example/blebeacon/
+│                   └── MainActivity.java
+├── docs/
+│   └── images/
+│       ├── Beacon1.jpeg
+│       ├── Beacon2.jpeg
+│       └── Beacon4.jpeg
+├── gradle/
+│   └── wrapper/
+│       ├── gradle-wrapper.jar
+│       └── gradle-wrapper.properties
+├── .gitignore
+├── build.gradle
+├── gradlew
+├── gradlew.bat
+├── README.md
+└── settings.gradle
+```
+
+## ⚠️ Known Limitations
 
 - The scanner detects BLE advertisers, not exclusively iBeacon devices.
-- iBeacon manufacturer-data filtering has not been implemented.
-- Many BLE devices do not advertise TxPower, making distance estimation unavailable.
-- The distance calculation uses a fixed path-loss exponent of `n = 2`.
-- RSSI readings fluctuate and can be affected by walls, obstacles, interference, and device orientation.
-- Distance estimates are approximate and should not be used for safety-critical navigation.
+- iBeacon-specific manufacturer-data filtering is not implemented.
+- Many BLE devices do not advertise TxPower.
+- Distance estimation uses a fixed path-loss exponent of `n = 2`.
+- RSSI measurements can fluctuate due to interference, obstacles, and device orientation.
+- Distance estimates are not suitable for safety-critical navigation.
 - Audio guidance, route guidance, and tunnel deployment are not implemented.
-- The project builds successfully but has not yet been tested on a physical Android device or BLE beacon.
+- The reconstructed application has not yet been tested on physical Android hardware.
 
-## Project Background
+## 🎓 Project Background
 
-The original project was developed in 2023 as part of a university project investigating navigation with the assistance of Bluetooth beacons.
+This repository revisits a university project developed in **2023**, focused on navigation with the assistance of Bluetooth beacons.
 
-Its technical report, titled *Πλοήγηση με τη βοήθεια beacons* (Navigation with the Help of Beacons), documented the original concept and experimental work.
+The original technical report, titled *Πλοήγηση με τη βοήθεια beacons* (*Navigation with the Help of Beacons*), documented the project's concept and experimental work.
 
-Because the original source code was no longer available, this repository contains a new implementation based on that report.
+Because the original source code was unavailable, the Android application was **reimplemented from scratch** using the report as a reference.
 
-The purpose of this reconstruction is to preserve and demonstrate the underlying Android, Java, Bluetooth Low Energy, and signal-processing concepts.
+The reconstruction demonstrates concepts involving:
 
-The BLE hardware used in the original experiments belonged to the university laboratory and is not included in this repository.
+- Native Android development with Java
+- Bluetooth Low Energy scanning
+- Wireless signal strength measurements
+- RSSI-based proximity estimation
+- Android permission handling
+- Gradle-based Android builds
 
-## Repository Notes
+The original BLE hardware belonged to the university laboratory and is not included in this repository.
 
-The following files are intentionally excluded from version control:
+## 📝 Repository Notes
 
-- Local Android SDK configuration (`local.properties`)
-- Gradle caches and build outputs
-- Generated APK and AAB files
-- IDE-specific configuration
-- Credentials, signing keys, and private laboratory files
+Local SDK configuration, Gradle caches, generated build files, IDE-specific files, credentials, and private laboratory configuration files are excluded from version control.
 
-## Future Improvements
+This repository contains newly written source code. It does not claim to recover or reproduce the original implementation.
 
-- Test BLE scanning on physical Android devices.
-- Validate distance estimation using real BLE beacons.
-- Implement iBeacon-specific manufacturer-data parsing.
-- Improve error handling and runtime permission management.
-- Add automated tests.
-- Investigate RSSI filtering to reduce fluctuations.
-- Improve the user interface and device information display.
+---
 
-## Attribution
-
-Reconstructed from the author's 2023 university technical report, *Πλοήγηση με τη βοήθεια beacons*.
-
-The repository contains newly written source code and does not claim to reproduce or recover the original implementation.
+**Reconstructed from a 2023 university project using Java, Android, and Bluetooth Low Energy technologies.**
