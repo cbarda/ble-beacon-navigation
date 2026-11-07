@@ -1,0 +1,13 @@
+*.iml
+.gradle/
+.idea/
+/build/
+**/build/
+local.properties
+*.apk
+*.aab
+.DS_Store
+
+# Local Gradle distribution
+gradle-8.7/
+gradle-8.7-bin.zip
